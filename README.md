@@ -57,7 +57,7 @@ le cache se complète tout seul, en arrière-plan, pour les nouveaux fichiers.
 
 ```
 # ~/.config/hypr/hyprland.conf
-bind = SUPER, W, exec, wallpaper-selector --toggle
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("wallpaper-selector --toggle"))
 ```
 
 Puis `hyprctl reload`. Le premier appui démarre le processus résident et affiche

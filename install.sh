@@ -63,7 +63,7 @@ cat <<EOF
 
 Il reste une ligne à ajouter dans ~/.config/hypr/hyprland.conf :
 
-    bind = ${KEYBIND}, exec, ${BIN_DIR}/${BIN_NAME} --toggle
+    hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("${BIN_NAME} --toggle"))
 
 puis recharger Hyprland :
 
@@ -71,6 +71,6 @@ puis recharger Hyprland :
 
 Essai immédiat sans raccourci :
 
-    ${BIN_DIR}/${BIN_NAME} --toggle
+    ${BIN_NAME} --toggle
 
 EOF
