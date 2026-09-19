@@ -1,8 +1,6 @@
 # wallpaper-selector
 
 Sélecteur de fonds d'écran pour Hyprland, avec favoris, en Rust + GTK4.
-Remplace `~/.config/hypr/scripts/wallpaper-selector.sh` (rofi) par un binaire
-natif qui s'ouvre en quelques millisecondes.
 
 ## Ce que ça change
 
@@ -92,11 +90,6 @@ le processus ne se termine jamais de lui-même.
 | `Échap` | Fermer (la fenêtre est masquée, le processus reste) |
 | frappe au clavier | Filtre la liste en direct |
 
-> **Pourquoi `Tab` et pas simplement `F` ?** La frappe au clavier filtre la
-> liste : si `F` épinglait, il serait impossible de chercher « Forest » ou
-> « Frieren ». `Tab` n'est pas un caractère saisissable, donc il ne rentre
-> jamais en conflit avec la recherche. `Ctrl+F` est là en secours.
-
 ## Recherche par type de fichier
 
 Un jeton préfixé par `#` filtre sur l'**extension réelle**, et ne participe pas
@@ -185,7 +178,7 @@ sont aussi reconnues.
 
 `~/.config/wallpaper-selector/style.css` remplace complètement le thème intégré
 si le fichier existe. Le thème par défaut reprend les couleurs et la géométrie
-du `wallpaper-grid.rasi` d'origine (Catppuccin, carte `#11111b`, bordure
+du `wallpaper-grid.rasi` (Catppuccin, carte `#11111b`, bordure
 `#b4befe`, sélection `#6277e3`).
 
 ## Ligne de commande
@@ -258,17 +251,5 @@ affiche sur la sortie d'erreur le détail `rescan` / `refilter` / `present`.
 
 ## Migration depuis l'ancien script
 
-Le fichier `~/.cache/last_wallpaper_id` est réécrit au **même format**
-(`AWWW|chemin`, `MPV|chemin`, `LWE|dossier`), donc les autres scripts de la
-session continuent de fonctionner.
-
-Différences de comportement assumées :
-
-- Le type d'un projet Steam est lu sur la clé `type` de **premier niveau** de
-  `project.json`. L'ancien script prenait le dernier `"type"` du fichier via
-  `tail -1`, ce qui pouvait capturer une clé imbriquée.
-- Les items dont le média n'est pas à la racine du dossier sont maintenant
-  trouvés (recherche limitée en profondeur), au lieu d'être ignorés.
-- `pkill -x` est utilisé pour `mpvpaper` et `awww`, et `pkill -f` pour
-  `linux-wallpaperengine` — son nom de processus est tronqué à 15 caractères par
-  le noyau, donc `pkill -x linux-wallpaperengine` ne correspondrait jamais.
+Le fichier `~/.cache/last_wallpaper_id` est réécrit au format
+(`AWWW|chemin`, `MPV|chemin`, `LWE|dossier`)
