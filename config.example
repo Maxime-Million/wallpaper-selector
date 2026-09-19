@@ -1,0 +1,34 @@
+# Configuration de wallpaper-selector
+#
+# Copier vers ~/.config/wallpaper-selector/config puis décommenter ce dont
+# vous avez besoin. Toutes les clés sont optionnelles : les valeurs indiquées
+# ici sont celles par défaut.
+
+# --- Sources -------------------------------------------------------------
+# steam_dir = ~/.local/share/Steam/steamapps/workshop/content/431960
+# perso_dir = ~/Images/wallpapers
+
+# --- Fenêtre -------------------------------------------------------------
+# width_pct  = 35          # largeur, en pourcentage de l'écran
+# height_pct = 55          # hauteur, en pourcentage de l'écran
+# thumb_px   = 80          # taille d'affichage des vignettes
+
+# --- Application du fond d'écran -----------------------------------------
+# transition_type     = grow      # transition awww (grow, wipe, fade, none…)
+# transition_duration = 1.2       # en secondes
+# monitor             = auto      # écran pour linux-wallpaperengine (auto = focalisé)
+# mpv_output          = *         # sortie mpvpaper (* = tous les écrans)
+
+# --- Comportement --------------------------------------------------------
+# resident = true
+#   true  : le premier lancement garde index, vignettes et fenêtre en mémoire ;
+#           les appuis suivants ne font que basculer la visibilité (~5 ms).
+#   false : application classique, le processus se termine à la fermeture.
+
+# autoselect_first = true
+#   Sélectionner la première entrée à l'ouverture.
+
+# --- Cache ---------------------------------------------------------------
+# thumb_cache_px = 256
+#   Taille de décodage des vignettes stockées dans
+#   ~/.cache/wallpaper-selector/thumbs. Augmenter si l'affichage est en HiDPI.

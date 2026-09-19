@@ -1,0 +1,20 @@
+[package]
+name = "wallpaper-selector"
+version = "0.1.0"
+edition = "2021"
+description = "Sélecteur de fonds d'écran instantané pour Hyprland (rofi-like, avec favoris)"
+license = "MIT"
+
+[dependencies]
+gtk4 = { version = "0.11", features = ["v4_12"] }
+gtk4-layer-shell = "0.8"
+gdk-pixbuf = "0.22"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Uniquement pour `setsid()` : détacher le processus résident du terminal.
+libc = "0.2"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+strip = true
