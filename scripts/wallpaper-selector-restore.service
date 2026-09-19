@@ -1,0 +1,34 @@
+# wallpaper-selector — restauration du fond d'écran au démarrage de session.
+#
+# Installation :
+#   ./install.sh --service
+#
+# ou à la main (remplacer @BIN_DIR@ par le dossier contenant le binaire) :
+#   sed "s|@BIN_DIR@|$HOME/.local/bin|" scripts/wallpaper-selector-restore.service \
+#       > ~/.config/systemd/user/wallpaper-selector-restore.service
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now wallpaper-selector-restore.service
+#
+# Avec ce service, plus besoin d'une ligne exec-once / hl.exec_cmd dans
+# hyprland.conf/lua pour recharger le fond d'écran.
+
+[Unit]
+Description=Restaure le dernier fond d'écran (wallpaper-selector)
+
+[Service]
+Type=oneshot
+
+# Indispensable : l'unité reste active après la fin du script. Sans ça, systemd
+# démonterait son cgroup et tuerait awww-daemon / mpvpaper /
+# linux-wallpaperengine, c'est-à-dire le fond d'écran qu'on vient de lancer.
+RemainAfterExit=yes
+
+# Le script retrouve lui-même WAYLAND_DISPLAY : inutile de l'importer ici.
+ExecStart=@BIN_DIR@/init-wallpaper.sh
+
+# Le service démarre avant que le compositeur n'existe : le script attend que
+# le socket Wayland apparaisse (60 s au maximum ici).
+Environment=WALLPAPER_RESTORE_TIMEOUT=60
+
+[Install]
+WantedBy=default.target

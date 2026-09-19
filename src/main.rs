@@ -31,6 +31,7 @@ enum Mode {
     Hide,
     Quit,
     Reload,
+    Restore,
     RebuildCache,
     Favorites,
     Favorite(String, bool),
@@ -61,6 +62,7 @@ fn parse_args(args: &[String]) -> Result<Cli, String> {
             "--hide" => mode = Mode::Hide,
             "-q" | "--quit" => mode = Mode::Quit,
             "--reload" => mode = Mode::Reload,
+            "--restore" => mode = Mode::Restore,
             "--rebuild-cache" => mode = Mode::RebuildCache,
             "--favorites" | "--list-favorites" => mode = Mode::Favorites,
             "--print" => mode = Mode::Print(false),
@@ -176,6 +178,13 @@ fn main() -> ExitCode {
                 ExitCode::SUCCESS
             }
         }
+        Mode::Restore => match apply::restore(&cfg) {
+            Ok(()) => ExitCode::SUCCESS,
+            Err(e) => {
+                eprintln!("[wallpaper-selector] restauration impossible : {e}");
+                ExitCode::FAILURE
+            }
+        },
         Mode::RebuildCache => rebuild_cache(&cfg, &favs),
     }
 }
@@ -345,6 +354,7 @@ OPTIONS:
         --hide            Masque la fenêtre
     -q, --quit            Arrête le processus résident
         --reload          Relit la liste sans rouvrir la fenêtre
+        --restore         Réapplique le dernier fond d'écran enregistré
         --rebuild-cache   Régénère toutes les vignettes
         --print           Liste l'index en texte
         --json            Liste l'index en JSON (champ « favorite » inclus)

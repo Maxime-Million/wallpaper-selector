@@ -11,7 +11,7 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
 use crate::config::Config;
-use crate::model::{Kind, Wallpaper};
+use crate::model::{Kind, Source, Wallpaper};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Backend {
@@ -191,4 +191,98 @@ pub fn apply(cfg: &Config, w: &Wallpaper) -> io::Result<()> {
     );
 
     Ok(())
+}
+
+/// Analyse le contenu de `last_wallpaper_id` (`TYPE|chemin`).
+///
+/// Le format est celui du script bash d'origine, pour que les deux
+/// continuent de se comprendre : `AWWW|photo.png`, `MPV|clip.mp4`,
+/// `LWE|/chemin/vers/dossier`.
+pub fn parse_cache(text: &str) -> Option<(Backend, PathBuf)> {
+    let (tag, target) = text.trim().split_once('|')?;
+    let backend = match tag {
+        "AWWW" => Backend::Awww,
+        "MPV" => Backend::Mpvpaper,
+        "LWE" => Backend::WallpaperEngine,
+        _ => return None,
+    };
+    let target = target.trim();
+    if target.is_empty() {
+        return None;
+    }
+    Some((backend, PathBuf::from(target)))
+}
+
+/// Rejoue le dernier fond d'écran appliqué, sans ouvrir l'interface.
+///
+/// C'est ce que lance `wallpaper-selector --restore`, utilisé au démarrage de
+/// la session (voir `scripts/init-wallpaper.sh`) pour retrouver le fond
+/// d'écran choisi la veille.
+pub fn restore(cfg: &Config) -> io::Result<()> {
+    let text = std::fs::read_to_string(&cfg.last_wallpaper).map_err(|e| {
+        io::Error::new(
+            e.kind(),
+            format!("aucun fond d'écran enregistré ({})", cfg.last_wallpaper.display()),
+        )
+    })?;
+    let (backend, target) = parse_cache(&text).ok_or_else(|| {
+        io::Error::new(
+            io::ErrorKind::InvalidData,
+            format!("contenu illisible : {}", text.trim()),
+        )
+    })?;
+
+    let kind = match backend {
+        Backend::WallpaperEngine => Kind::Pkg,
+        Backend::Mpvpaper => Kind::Video,
+        Backend::Awww => Kind::Image,
+    };
+    // Pour un `.pkg`, la cible est le dossier de la scène ; pour les autres,
+    // c'est le média lui-même.
+    let media = match kind {
+        Kind::Pkg => None,
+        _ => Some(target.clone()),
+    };
+
+    let w = Wallpaper {
+        id: String::new(),
+        title: String::new(),
+        path: target,
+        preview: None,
+        media,
+        kind,
+        source: Source::Perso,
+        ext: String::new(),
+        favorite: false,
+    };
+    apply(cfg, &w)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_cache_reconnait_les_trois_moteurs() {
+        assert_eq!(
+            parse_cache("AWWW|/tmp/a.png\n"),
+            Some((Backend::Awww, PathBuf::from("/tmp/a.png")))
+        );
+        assert_eq!(
+            parse_cache("MPV|/tmp/b.mp4"),
+            Some((Backend::Mpvpaper, PathBuf::from("/tmp/b.mp4")))
+        );
+        assert_eq!(
+            parse_cache("LWE|/games/123"),
+            Some((Backend::WallpaperEngine, PathBuf::from("/games/123")))
+        );
+    }
+
+    #[test]
+    fn parse_cache_rejette_le_restee() {
+        assert_eq!(parse_cache(""), None);
+        assert_eq!(parse_cache("sans separateur"), None);
+        assert_eq!(parse_cache("AWWW|"), None);
+        assert_eq!(parse_cache("INCONNU|/tmp/a.png"), None);
+    }
 }
