@@ -14,11 +14,11 @@ la fenêtre s'ouvre en **~25 ms** au lieu de ~0,5-1 s, parce qu'elle ne relit pa
 
 ```
 ╭─────────────────────────────────────────────────────────────────────────╮
-│  Rechercher…                                                       3/47  │
+│  Rechercher…                                                       3/47 │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  ★ FAVORIS                                                              │
-│  ★  pond_shed.png          perso · png · perso                      ★  │
-│  ★  Cabin                  perso · jpg · perso                      ★  │
+│  ★  pond_shed.png          perso · png · perso                      ★   │
+│  ★  Cabin                  perso · jpg · perso                      ★   │
 │  TOUS LES FONDS D'ÉCRAN                                                 │
 │     Dragon Bones           1355236618 · pkg · steam                     │
 │  ▸  Ghost of Tsushima      1223062915 · mp4 · steam                     │
